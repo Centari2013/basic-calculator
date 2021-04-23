@@ -4,16 +4,21 @@ const mainDiv = document.createElement("div");
 const inputDiv = document.createElement("div");
 const inputText = document.createElement("p");
 const operatorDiv = document.createElement("div");
+const enterClearDiv = document.createElement("div");
 const numberDiv = document.createElement("div");
 
 mainDiv.setAttribute("id", "main-div");
 inputDiv.setAttribute("id", "input-div");
+operatorDiv.setAttribute("id", "operator-div");
+enterClearDiv.setAttribute("id", "enter-clear");
+numberDiv.setAttribute("id", "number-div");
 
 setButtons();
 
 inputDiv.appendChild(inputText);
 mainDiv.appendChild(inputDiv);
 mainDiv.appendChild(operatorDiv);
+mainDiv.appendChild(enterClearDiv);
 mainDiv.appendChild(numberDiv);
 body.appendChild(mainDiv);
 
@@ -40,17 +45,6 @@ function setButtons() {
         operatorDiv.appendChild(opButton);
     }
 
-    //CLEAR BUTTON
-    let clearButton = document.createElement("button");
-    clearButton.textContent = "CLEAR";
-    clearButton.setAttribute("id", "clear");
-    clearButton.addEventListener("click", function () {
-        clearInput();
-        let decimalButton = document.querySelector("#decimal-button");
-        decimalButton.removeAttribute("disabled");
-    });
-    operatorDiv.appendChild(clearButton);
-
     //ENTER BUTTON
     let enterButton = document.createElement("button");
     enterButton.textContent = "ENTER";
@@ -63,7 +57,18 @@ function setButtons() {
         let decimalButton = document.querySelector("#decimal-button");
         decimalButton.removeAttribute("disabled");
     });
-    operatorDiv.appendChild(enterButton);
+    enterClearDiv.appendChild(enterButton);
+
+    //CLEAR BUTTON
+    let clearButton = document.createElement("button");
+    clearButton.textContent = "CLEAR";
+    clearButton.setAttribute("id", "clear");
+    clearButton.addEventListener("click", function () {
+        clearInput();
+        let decimalButton = document.querySelector("#decimal-button");
+        decimalButton.removeAttribute("disabled");
+    });
+    enterClearDiv.appendChild(clearButton);
 
     //NUMBER BUTTONS
     let nums = [[1,"one"], [2,"two"], [3,"three"], [4,"four"], [5,"five"], 

@@ -7,3 +7,46 @@ blockquote,q { quotes: none;}
 blockquote:before,blockquote:after,q:before,q:after { content: ''; content: none;}
 /*CSS RESET*/
 
+button {
+    font-size: 30px;
+    border-radius: 6px;
+    margin: 5px;
+    line-height: 50px;
+    
+}
+
+#main-div {
+    width: 550px;
+    font-size: 40px;
+    border: solid 2px;
+    border-radius: 6px;
+    padding: 7px;
+}
+
+#input-div {
+    height: 50px;
+    border: solid 2px;
+    border-radius: 6px;
+    margin: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#operator-div {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+#enter-clear {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+#number-div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+}
+
+    
