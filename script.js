@@ -4,28 +4,34 @@ const mainDiv = document.createElement("div");
 const inputDiv = document.createElement("div");
 const inputText = document.createElement("p");
 const operatorDiv = document.createElement("div");
-const enterClearDiv = document.createElement("div");
+const equalClearDiv = document.createElement("div");
 const numberDiv = document.createElement("div");
+const instructions = document.createElement("p");
 
 mainDiv.setAttribute("id", "main-div");
 inputDiv.setAttribute("id", "input-div");
 operatorDiv.setAttribute("id", "operator-div");
-enterClearDiv.setAttribute("id", "enter-clear");
+equalClearDiv.setAttribute("id", "equal-clear");
 numberDiv.setAttribute("id", "number-div");
+instructions.setAttribute("id", "instructions-text");
+
+instructions.textContent = "You can use your keyboard to input expressions by selecting the corresponding key. Press \"e\" to submit. " + 
+"You may also use TAB and Shift+TAB to cycle between buttons and use ENTER to select one.";
 
 setButtons();
 
 inputDiv.appendChild(inputText);
 mainDiv.appendChild(inputDiv);
 mainDiv.appendChild(operatorDiv);
-mainDiv.appendChild(enterClearDiv);
+mainDiv.appendChild(equalClearDiv);
 mainDiv.appendChild(numberDiv);
 body.appendChild(mainDiv);
+body.appendChild(instructions);
 
 
 function setButtons() {
     //OPERATOR BUTTONS
-    let operators = [["+","plus"], ["-","minus"], ["*", "multiply"], ["/", "divide"]];
+    let operators = [["+","plus"], ["-","minus"], ["x", "multiply"], ["/", "divide"]];
     for (let i = 0; i < operators.length; i++){
         let opButton = document.createElement("button");
         opButton.textContent = operators[i][0];
@@ -39,25 +45,26 @@ function setButtons() {
             opButtons.forEach(button => {
                 button.setAttribute("disabled", "disabled");
             });
-            let decimalButton = document.querySelector("#decimal-button");
+            let decimalButton = document.querySelector("#decimal");
             decimalButton.removeAttribute("disabled");
+
         });
         operatorDiv.appendChild(opButton);
     }
 
-    //ENTER BUTTON
-    let enterButton = document.createElement("button");
-    enterButton.textContent = "ENTER";
-    enterButton.setAttribute("id", "enter");
-    enterButton.setAttribute("name", "Enter");
-    enterButton.addEventListener("click", function () {
+    //EQUAL BUTTON
+    let equalButton = document.createElement("button");
+    equalButton.textContent = "=";
+    equalButton.setAttribute("id", "equal");
+    equalButton.setAttribute("name", "e");
+    equalButton.addEventListener("click", function () {
         let answer = calculate(inputText.textContent)
         clearInput();
         updateInput(answer);
-        let decimalButton = document.querySelector("#decimal-button");
+        let decimalButton = document.querySelector("#decimal");
         decimalButton.removeAttribute("disabled");
     });
-    enterClearDiv.appendChild(enterButton);
+    equalClearDiv.appendChild(equalButton);
 
     //CLEAR BUTTON
     let clearButton = document.createElement("button");
@@ -65,10 +72,10 @@ function setButtons() {
     clearButton.setAttribute("id", "clear");
     clearButton.addEventListener("click", function () {
         clearInput();
-        let decimalButton = document.querySelector("#decimal-button");
+        let decimalButton = document.querySelector("#decimal");
         decimalButton.removeAttribute("disabled");
     });
-    enterClearDiv.appendChild(clearButton);
+    equalClearDiv.appendChild(clearButton);
 
     //NUMBER BUTTONS
     let nums = [[1,"one"], [2,"two"], [3,"three"], [4,"four"], [5,"five"], 
@@ -92,7 +99,7 @@ function setButtons() {
     //DECIMAL BUTTON
     let decimalButton = document.createElement("button");
     decimalButton.textContent =  ".";
-    decimalButton.setAttribute("id", "decimal-button");
+    decimalButton.setAttribute("id", "decimal");
     decimalButton.setAttribute("name", ".");
     decimalButton.addEventListener("click", function () {
         updateInput(this.name);
@@ -104,7 +111,7 @@ function setButtons() {
         let key = event.key;
         let numMatch = nums.some(pair => pair.includes(parseInt(key)));
         let opMatch = operators.some(pair => pair.includes(key));
-        if (numMatch||opMatch||key=="."||key=="Enter"){
+        if (numMatch||opMatch||key=="."||key=="e"){
             let button = document.querySelector(`[name="${key}"]`);
             button.click();
         }else if(key == "Backspace"){
@@ -117,8 +124,17 @@ function setButtons() {
 
 
 function updateInput(content = "") {
-    text = document.createTextNode(content);
-    inputText.appendChild(text);
+    let text = document.createTextNode(content);
+    if (/[\+|\-|x|\/]/.test(content)){
+        console.log(content)
+        let span = document.createElement("span");
+        span.style.margin = "0 5px 0 5px";
+        span.appendChild(text);
+        inputText.appendChild(span);
+    }else{
+        inputText.appendChild(text);
+    }
+    
 }
 
 function clearInput() {
@@ -151,10 +167,10 @@ function calculate(expression){
         return "Can't divide by zero."
     }
     let numRegex = /[0-9.]/g;
-    expression = expression.replace(/[\+|-|\*|\/]$/, ""); //gets rid of trailing operators
-    let nums = expression.split(/\+|-|\*|\/|\s/g).map(n => parseFloat(n)); //stores numbers in array
+    expression = expression.replace(/[\+|\-|x|\/]$/, ""); //gets rid of trailing operators
+    let nums = expression.split(/\+|\-|x|\/|\s/g).map(n => parseFloat(n)); //stores numbers in array
     let operators = Array.from(expression.replace(numRegex, "")); //stores operators in array
-
+    
     console.log("Operators: ", operators);
     console.log("Nums: ", nums);
 
@@ -162,7 +178,7 @@ function calculate(expression){
     let mIndexes = [], dIndexes = [], aIndexes = [], sIndexes = [];
     for (let i = 0; i < operators.length; i++){
         let op = operators[i];
-        (op == "*") ? mIndexes.push(i) :
+        (op == "x") ? mIndexes.push(i) :
         (op == "/") ? dIndexes.push(i) :
         (op == "+") ? aIndexes.push(i) :
         (op == "-") ? sIndexes.push(i) :
@@ -170,7 +186,7 @@ function calculate(expression){
     }
 
     //multiplies and divides first
-    let indexesList = operate(mIndexes, dIndexes, aIndexes, sIndexes, nums, "*");
+    let indexesList = operate(mIndexes, dIndexes, aIndexes, sIndexes, nums, "x");
     nums = indexesList[0];
     dIndexes = indexesList[1];
     aIndexes = indexesList[2];
@@ -195,7 +211,7 @@ function calculate(expression){
         let op = operators[i], a = nums[i], b = nums[i + 1];
         nums[i + 1] = (op == "+") ? add(a, b) :
         (op == "-") ? subtract(a, b) :
-        (op == "*") ? multiply(a, b) :
+        (op == "x") ? multiply(a, b) :
         (op == "/") ? divide(a, b) :
         console.log("ERROR WITH OPERATING");
     }
@@ -211,7 +227,7 @@ function operate(aIndexes, bIndexes, cIndexes, dIndexes, nums, op) {
         let a = nums[index], b = nums[index + 1];
         nums[index + 1] = (op == "+") ? add(a, b) :
         (op == "-") ? subtract(a, b) :
-        (op == "*") ? multiply(a, b) :
+        (op == "x") ? multiply(a, b) :
         (op == "/") ? divide(a, b) :
         console.log("ERROR WITH SETTING OPERATOR ARRAYS");
 
@@ -240,4 +256,4 @@ function reduceIndexes(aIndexes, bIndexes, cIndexes, index){
 }
 
 //TEST FUNCTIONS
-console.log("Answer: ", calculate("12+7-5*3.57/3.678"));
+console.log("Answer: ", calculate("12+7-5x3.57/3.678"));

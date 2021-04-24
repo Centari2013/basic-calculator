@@ -12,14 +12,22 @@ button {
     border-radius: 6px;
     margin: 5px;
     line-height: 50px;
-    
+}
+
+#zero {
+    grid-area: zero;
+}
+
+#decimal {
+    grid-area: decimal;
 }
 
 #main-div {
-    width: 550px;
+    width: 500px;
+    margin: 5vh auto auto auto;
     font-size: 40px;
     border: solid 2px;
-    border-radius: 6px;
+    border-radius: 20px;
     padding: 7px;
 }
 
@@ -38,7 +46,7 @@ button {
     grid-template-columns: repeat(4, 1fr);
 }
 
-#enter-clear {
+#equal-clear {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
@@ -47,6 +55,18 @@ button {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
+    grid-template-areas:
+      "one two three"
+      "four five six"
+      "seven eight nine"
+      "blank zero decimal";
+}
+
+#instructions-text {
+    width: 700px; 
+    margin: 3vh auto auto auto; 
+    color: gray; 
+    font-size: 20px
 }
 
     
